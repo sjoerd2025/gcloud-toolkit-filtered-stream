@@ -1,0 +1,3 @@
+## 2026-01-17 - Adding Default States to API Services
+**Learning:** Even "headless" API services benefit from a human-readable default state. When developers or stakeholders hit the root URL of an API service, a 404 error creates uncertainty ("Is it down? Is the URL wrong?"). A simple HTML status page acts as an immediate confirmation of health and provides "self-documentation" by listing available endpoints, improving the developer experience (DX) significantly.
+**Action:** Always include a lightweight root route handler (`/`) for API services that returns a basic HTML status page with a list of key endpoints, rather than leaving it to default 404 behavior.
