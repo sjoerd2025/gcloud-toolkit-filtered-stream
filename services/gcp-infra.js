@@ -161,11 +161,10 @@ async function deleteDataSet(dataSetName) {
 }
 
 async function insertRowsAsStream(datasetId, tableId, rows) {
-    const bigqueryClient = new BigQuery();
     // Insert data into a table
     try {
         const result = await new Promise((resolve, reject) => {
-            bigqueryClient
+            bigquery
                 .dataset(datasetId)
                 .table(tableId)
                 .insert(rows)
