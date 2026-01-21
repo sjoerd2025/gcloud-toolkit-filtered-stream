@@ -178,7 +178,7 @@ async function insertRowsAsStream(datasetId, tableId, rows) {
 async function insertTweets(data) {
     var resultRows = [];
     data.forEach(function (tweetData, index) {
-        let tweet = JSON.parse(tweetData).data;
+        let tweet = tweetData.data;
         if (tweet) {
             var cDate = new Date(tweet.created_at);
             if (tweet.context_annotations === undefined)
