@@ -79,7 +79,8 @@ async function streamTweets() {
             if (json_payload) {
                 try {
                     JSON.parse(json_payload);
-                    gcp_infra_svcs.publishMessage(config.gcp_infra.topicName, JSON.stringify(json_payload));
+                    // Optimization: Send raw JSON string to avoid double-serialization overhead
+                    gcp_infra_svcs.publishMessage(config.gcp_infra.topicName, json_payload);
                 } catch (e) {
                     if (json_payload[0] === undefined || json_payload[0] === '\r' || json_payload[0] === '' || json_payload[0] === '\n') {
                         console.log('~~~ Heartbeat payload ~~~ ');

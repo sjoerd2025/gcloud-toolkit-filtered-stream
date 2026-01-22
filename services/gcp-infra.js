@@ -178,7 +178,9 @@ async function insertRowsAsStream(datasetId, tableId, rows) {
 async function insertTweets(data) {
     var resultRows = [];
     data.forEach(function (tweetData, index) {
-        let tweet = JSON.parse(tweetData).data;
+        // Optimize: Handle both string (legacy/double-serialized) and object (single-serialized) formats
+        // This avoids double parsing when upstream provides objects directly
+        let tweet = (typeof tweetData === 'string' ? JSON.parse(tweetData) : tweetData).data;
         if (tweet) {
             var cDate = new Date(tweet.created_at);
             if (tweet.context_annotations === undefined)
