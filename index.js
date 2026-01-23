@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const stream = require('./controllers/stream')
@@ -21,6 +22,10 @@ app.use('/rules',rules);
 app.use('/api', api)
 app.use('/token', token)
 app.use('/stripe',stripe);
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/index.html'));
+});
 
 app.listen(PORT, ()=>   {
     console.log("App listening on port",PORT);
