@@ -62,31 +62,28 @@ async function synchronousPull(projectId, subscriptionName, maxMessagesToPull) {
 }
 
 async function provisionDB() {
-    return new Promise(function (resolve, reject) {
-        createDataSet(config.gcp_infra.bq.dataSetId).then((dataSetResponse) => {
-            console.log('dataSetResponse ', dataSetResponse);
-            createTables(config.gcp_infra.bq.dataSetId).then((tablesResponse) => {
-                console.log('tablesResponse ', tablesResponse);
-                resolve('Successfully provisioned DB');
-            }).catch(function (error) {
-                console.log('Error provisioning tables ', error);
-                reject({ "error": "Error Provisioning tables " });
-            });
-        }).catch(function (error) {
-            console.log('Error provisioning DB ', error);
-            reject({ "error": error.message });
-        })
-    })
+    try {
+        const dataSetResponse = await createDataSet(config.gcp_infra.bq.dataSetId);
+        console.log('dataSetResponse ', dataSetResponse);
+        try {
+            const tablesResponse = await createTables(config.gcp_infra.bq.dataSetId);
+            console.log('tablesResponse ', tablesResponse);
+            return 'Successfully provisioned DB';
+        } catch (error) {
+            console.log('Error provisioning tables ', error);
+            throw { "error": "Error Provisioning tables " };
+        }
+    } catch (error) {
+        if (error.error === "Error Provisioning tables ") throw error;
+        console.log('Error provisioning DB ', error);
+        throw { "error": error.message };
+    }
 }
 
 async function setupMsgInfra() {
-    return new Promise(function (resolve, reject) {
-        createTopic(config.gcp_infra.topicName).then(() => {
-            createSubscription(config.gcp_infra.topicName, config.gcp_infra.subscriptionName).then(() => {
-                resolve(config.gcp_infra.topicName);
-            });
-        });
-    })
+    await createTopic(config.gcp_infra.topicName);
+    await createSubscription(config.gcp_infra.topicName, config.gcp_infra.subscriptionName);
+    return config.gcp_infra.topicName;
 }
 
 async function cleanUp() {
@@ -112,11 +109,12 @@ async function createDataSet(dataSetName) {
 
 async function createTables(datasetId) {
     //create tables
-    const tweets_schema = fs.readFileSync('./schema/tweets.json');
+    // Optimization: Use async file read to avoid blocking the event loop
+    const tweets_schema = await fs.promises.readFile('./schema/tweets.json');
     const [tweets_table] = await bigquery.dataset(datasetId).createTable(config.gcp_infra.bq.table.tweets, { schema: JSON.parse(tweets_schema), location: 'US' });
     console.log(`Table ${tweets_table.id} created.`);
 
-    const users_schema = fs.readFileSync('./schema/users.json');
+    const users_schema = await fs.promises.readFile('./schema/users.json');
     const [users_table] = await bigquery.dataset(datasetId).createTable(config.gcp_infra.bq.table.users, { schema: JSON.parse(users_schema), location: 'US' });
     console.log(`Table ${users_table.id} created.`);
 }
