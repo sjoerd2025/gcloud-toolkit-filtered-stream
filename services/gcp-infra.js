@@ -182,7 +182,6 @@ async function insertTweets(data) {
         // This avoids double parsing when upstream provides objects directly
         let tweet = (typeof tweetData === 'string' ? JSON.parse(tweetData) : tweetData).data;
         if (tweet) {
-            var cDate = new Date(tweet.created_at);
             if (tweet.context_annotations === undefined)
                 tweet.context_annotations = [];
             if (tweet.referenced_tweets === undefined)
@@ -193,7 +192,7 @@ async function insertTweets(data) {
                 source: tweet.source,
                 author_id: tweet.author_id,
                 conversation_id: tweet.conversation_id,
-                created_at: BigQuery.datetime(cDate.toISOString()),
+                created_at: BigQuery.datetime(tweet.created_at),
                 lang: tweet.lang,
                 in_reply_to_user_id: tweet.in_reply_to_user_id,
                 possibly_sensitive: tweet.possibly_sensitive,
@@ -218,12 +217,11 @@ async function insertUsers(usersData) {
     console.log('users ',users);
     users.forEach(function (user, index) {
         if (user) {
-            var cDate = new Date(user.created_at);
             let row = {
                 id: user.id,
                 name: user.name,
                 username: user.username,
-                created_at: BigQuery.datetime(cDate.toISOString()),
+                created_at: BigQuery.datetime(user.created_at),
                 description: user.description,
                 entities: user.entities,
                 location: user.location,
