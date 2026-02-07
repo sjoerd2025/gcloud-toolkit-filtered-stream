@@ -71,8 +71,8 @@ async function streamTweets() {
         }
     }, options);
 
+    var splited_payload = '';
     stream.on('data', data => {
-        var splited_payload = '';
         try {
             const json_payload = data.toString();
             console.log('Received Tweet ');
@@ -86,8 +86,8 @@ async function streamTweets() {
                         console.log('~~~ Heartbeat payload ~~~ ');
                     } else {
                         if (splited_payload.length > 0) {
-                            splited_payload.append(json_payload);
-                            gcp_infra_svcs.publishMessage(config.gcp_infra.topicName, JSON.stringify(splited_payload));
+                            splited_payload += json_payload;
+                            gcp_infra_svcs.publishMessage(config.gcp_infra.topicName, splited_payload);
                             console.log('splited_payload ', JSON.parse(splited_payload));
                             splited_payload = '';
                         }
