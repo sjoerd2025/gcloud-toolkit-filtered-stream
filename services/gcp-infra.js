@@ -112,11 +112,11 @@ async function createDataSet(dataSetName) {
 
 async function createTables(datasetId) {
     //create tables
-    const tweets_schema = fs.readFileSync('./schema/tweets.json');
+    const tweets_schema = await fs.promises.readFile('./schema/tweets.json');
     const [tweets_table] = await bigquery.dataset(datasetId).createTable(config.gcp_infra.bq.table.tweets, { schema: JSON.parse(tweets_schema), location: 'US' });
     console.log(`Table ${tweets_table.id} created.`);
 
-    const users_schema = fs.readFileSync('./schema/users.json');
+    const users_schema = await fs.promises.readFile('./schema/users.json');
     const [users_table] = await bigquery.dataset(datasetId).createTable(config.gcp_infra.bq.table.users, { schema: JSON.parse(users_schema), location: 'US' });
     console.log(`Table ${users_table.id} created.`);
 }
@@ -251,4 +251,4 @@ async function insertStreamResults(results) {
     }
 }
 
-module.exports = { provisionDB, setupMsgInfra, cleanUp, publishMessage, synchronousPull };
+module.exports = { provisionDB, setupMsgInfra, cleanUp, publishMessage, synchronousPull, createTables };

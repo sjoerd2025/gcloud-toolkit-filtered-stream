@@ -9,3 +9,7 @@
 ## 2024-10-27 - Unnecessary Date Parsing
 **Learning:** Parsing ISO 8601 strings into Date objects only to call `.toISOString()` is redundant and expensive (~400x slower).
 **Action:** When the source (like Twitter API) guarantees ISO format, pass the string directly to BigQuery/Database.
+
+## 2024-10-31 - Blocking Synchronous I/O
+**Learning:** `fs.readFileSync` blocks the Node.js event loop completely, preventing other tasks (like network requests or timers) from executing. This causes significant latency in high-concurrency environments.
+**Action:** Always use `fs.promises` or callback-based `fs` methods for file operations within async functions to allow the event loop to proceed.
