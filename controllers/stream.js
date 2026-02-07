@@ -49,7 +49,7 @@ router.get("/poll/:frequency/:delay", function (req, res) {
                 }
             })
 
-        }, req.params.delay);
+        }, req.params.delay * (i + 1));
     }
     res.send('polling Tweets from PubSub');
 });
