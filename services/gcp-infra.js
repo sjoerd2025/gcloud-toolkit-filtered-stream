@@ -209,7 +209,7 @@ async function insertTweets(data) {
         }
     });
     // insert Tweets
-    insertRowsAsStream(config.gcp_infra.bq.dataSetId, config.gcp_infra.bq.table.tweets, resultRows);
+    await insertRowsAsStream(config.gcp_infra.bq.dataSetId, config.gcp_infra.bq.table.tweets, resultRows);
 }
 
 async function insertUsers(usersData) {
@@ -246,7 +246,7 @@ async function insertStreamResults(results) {
     console.log('insertStreamResults ', results.length);
     let data = results;
     if (data != undefined)  {
-        insertTweets(data);
+        await insertTweets(data);
         //insertUsers(data);
     }
 }
