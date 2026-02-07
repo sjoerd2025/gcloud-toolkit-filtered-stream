@@ -13,7 +13,7 @@ async function getTrends(minutes) {
         location: 'US',
     };
 
-    // Return the promise chain directly
+    // Optimization: Return the promise directly, avoiding explicit Promise constructor anti-pattern
     return bigqueryClient.query(options);
 }
 
