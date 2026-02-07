@@ -9,3 +9,6 @@
 ## 2024-10-27 - Unnecessary Date Parsing
 **Learning:** Parsing ISO 8601 strings into Date objects only to call `.toISOString()` is redundant and expensive (~400x slower).
 **Action:** When the source (like Twitter API) guarantees ISO format, pass the string directly to BigQuery/Database.
+## Bolt Journal
+
+- Avoid concurrent polling bursts by staggering requests using `setTimeout` with `delay * (i + 1)` instead of `delay`. This prevents sudden spikes in traffic and resource usage.
