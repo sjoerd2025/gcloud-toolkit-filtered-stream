@@ -214,31 +214,37 @@ async function insertTweets(data) {
 
 async function insertUsers(usersData) {
     var resultRows = [];
-    let users = JSON.parse(usersData).includes.users;
-    console.log('users ',users);
-    users.forEach(function (user, index) {
-        if (user) {
-            let row = {
-                id: user.id,
-                name: user.name,
-                username: user.username,
-                // Optimization: Pass ISO string directly to avoid unnecessary Date parsing/serialization
-                created_at: BigQuery.datetime(user.created_at),
-                description: user.description,
-                entities: user.entities,
-                location: user.location,
-                pinned_tweet_id: user.pinned_tweet_id,
-                profile_image_url: user.profile_image_url,
-                protected: user.protected,
-                public_metrics: user.public_metrics,
-                url: user.url,
-                verified: user.verified,
-                withheld: user.withheld
-            };
-            resultRows.push(row);
+    usersData.forEach(function (dataItem) {
+        let item = (typeof dataItem === 'string' ? JSON.parse(dataItem) : dataItem);
+        if (item.includes && item.includes.users) {
+            let users = item.includes.users;
+            users.forEach(function (user) {
+                if (user) {
+                    let row = {
+                        id: user.id,
+                        name: user.name,
+                        username: user.username,
+                        // Optimization: Pass ISO string directly to avoid unnecessary Date parsing/serialization
+                        created_at: BigQuery.datetime(user.created_at),
+                        description: user.description,
+                        entities: user.entities,
+                        location: user.location,
+                        pinned_tweet_id: user.pinned_tweet_id,
+                        profile_image_url: user.profile_image_url,
+                        protected: user.protected,
+                        public_metrics: user.public_metrics,
+                        url: user.url,
+                        verified: user.verified,
+                        withheld: user.withheld
+                    };
+                    resultRows.push(row);
+                }
+            });
         }
     });
-    insertRowsAsStream(reqBody.dataSet.dataSetName, config.bq.table.users, resultRows);
+    if (resultRows.length > 0) {
+        insertRowsAsStream(config.gcp_infra.bq.dataSetId, config.gcp_infra.bq.table.users, resultRows);
+    }
 }
 
 
