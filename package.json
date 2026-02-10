@@ -11,11 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/bigquery": "^5.5.0",
-    "@google-cloud/pubsub": "^2.10.0",
+    "@google-cloud/pubsub": "^5.2.2",
     "axios": "^0.27.2",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "express": "^4.22.1",
     "googleapis": "^104.0.0",
     "hashmap": "^2.4.0",
     "needle": "^3.0.0",
